@@ -45,20 +45,32 @@ public class AlumnoDAOImplJSON implements AlumnoDAO {
 
 private Map<String ,Alumno> read() throws DAOException{
 	
-		try {
-			Map<String,Alumno> alumnmos=  this.mapper.readValue(this.pathjson.toFile(), new TypeReference<Map<String, Alumno>>(){});
-		return alumnmos;
-		} catch (StreamReadException e) {
-			throw new DAOException(
-			        String.format(
-			            DAOException.ERROR_MESSAGE_BAD_FORMAT)
-			    );		} catch (DatabindException e) {
-			// TODO Auto-generated catch block
-		} catch (IOException e) {
-throw new DAOException(String.format(DAOException.ERROR_MESSAGE_IO));
-		}
-return null;
+		
+			Map<String, Alumno> alumnmos;
+			try {
+				alumnmos = this.mapper.readValue(this.pathjson.toFile(), new TypeReference<Map<String, Alumno>>(){});
+				return alumnmos;
+
+			} catch (StreamReadException e) {
+				// TODO Auto-generated catch block
+				throw new DAOException(DAOException.ERROR_MESSAGE_BAD_FORMAT);
+			} catch (DatabindException e) {
+				// TODO Auto-generated catch block
+				throw new DAOException(DAOException.ERROR_MESSAGE_BAD_FORMAT);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				throw new DAOException(DAOException.ERROR_MESSAGE_IO);
+			}
+		
 	
+}
+private void write(ObjectMapper mapper) throws DAOException {
+	try {
+		this.mapper.writeValue(this.pathjson.toFile(), mapper);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 }
 	@Override
 	public void add(String element) throws DAOException {
