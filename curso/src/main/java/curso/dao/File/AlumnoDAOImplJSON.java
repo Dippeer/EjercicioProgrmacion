@@ -1,4 +1,4 @@
-package curso.daoFile;
+package curso.dao.File;
 
 import java.io.IOException;
 import java.nio.file.Files;

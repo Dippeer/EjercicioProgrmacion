@@ -1,8 +1,9 @@
 package curso.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Profesor {
+public class Profesor implements Serializable{
 	private String Dni;
 	private String nombre;
 	private String apellidos;
