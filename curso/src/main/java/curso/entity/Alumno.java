@@ -14,7 +14,14 @@ public class Alumno {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.email = email;
+
 	}
+	
+
+	public Alumno() {
+		super();
+	}
+
 
 	public String getDni() {
 		return dni;

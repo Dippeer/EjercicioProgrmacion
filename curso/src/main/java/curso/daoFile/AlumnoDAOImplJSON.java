@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,63 +45,75 @@ public class AlumnoDAOImplJSON implements AlumnoDAO {
 		}
 	}
 
-private Map<String ,Alumno> read() throws DAOException{
-	
+	private Map<String, Alumno> read() throws DAOException {
+
+		Map<String, Alumno> alumnmos;
+		try {
+			alumnmos = this.mapper.readValue(this.pathjson.toFile(), new TypeReference<Map<String, Alumno>>() {
+			});
+			return alumnmos;
+
+		} catch (StreamReadException e) {
+			// TODO Auto-generated catch block
+			throw new DAOException(DAOException.ERROR_MESSAGE_BAD_FORMAT);
+		} catch (DatabindException e) {
+			// TODO Auto-generated catch block
+			throw new DAOException(DAOException.ERROR_MESSAGE_BAD_FORMAT);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new DAOException(DAOException.ERROR_MESSAGE_IO);
+		}
+
+	}
+
+	private void write(Map<String,Alumno> a) throws DAOException {
+		try {
+			this.mapper.writeValue(this.pathjson.toFile(), a);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new DAOException(DAOException.ERROR_MESSAGE_IO);
+		}
+	}
+
+	@Override
+	public void add(Alumno element) throws DAOException {
+		// TODO Auto-generated method stub
+Map<String,Alumno> alumnos=this.read();
+alumnos.put(element.getDni(), element);
+	this.write(alumnos);
+	}
+
+	@Override
+	public Alumno get(String key) throws DAOException {
+		// TODO Auto-generated method stub
+		return this.read().get(key);
+	}
+
+	@Override
+	public List<Alumno> getAll() throws DAOException {
+		// TODO Auto-generated method stub
+		return new ArrayList<Alumno>(this.read().values());
+	}
+
+	@Override
+	public void uptade(Alumno element) throws DAOException {
+		Map <String,Alumno> alumnos= this.read();
+		if (alumnos.containsKey(element.getDni())) {
+			alumnos.put(element.getDni(), element);
+			this.write(alumnos);
+		}
 		
-			Map<String, Alumno> alumnmos;
-			try {
-				alumnmos = this.mapper.readValue(this.pathjson.toFile(), new TypeReference<Map<String, Alumno>>(){});
-				return alumnmos;
+	}
 
-			} catch (StreamReadException e) {
-				// TODO Auto-generated catch block
-				throw new DAOException(DAOException.ERROR_MESSAGE_BAD_FORMAT);
-			} catch (DatabindException e) {
-				// TODO Auto-generated catch block
-				throw new DAOException(DAOException.ERROR_MESSAGE_BAD_FORMAT);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				throw new DAOException(DAOException.ERROR_MESSAGE_IO);
-			}
+	@Override
+	public boolean remove(String key) throws DAOException {
+		Map <String,Alumno> alumnos= this.read();
+	boolean borrado=false;
+		if (alumnos.containsKey(key)) {
+		return borrado=alumnos.remove(key) != null;	
 		
-	
-}
-private void write(ObjectMapper mapper) throws DAOException {
-	try {
-		this.mapper.writeValue(this.pathjson.toFile(), mapper);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-}
-	@Override
-	public void add(String element) throws DAOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String get(Alumno key) throws DAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<String> getAll() throws DAOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void uptade(String element) throws DAOException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean remove(Alumno key) throws DAOException {
-		// TODO Auto-generated method stub
-		return false;
+		}
+		return borrado;
 	}
 
 }
