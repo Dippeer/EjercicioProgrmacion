@@ -90,4 +90,9 @@ public class Curso {
 		return id == other.id;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("");
+	}
+
 }
